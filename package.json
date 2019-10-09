@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tsc": "tsc",
     "ex0": "ts-node src/example-0",
     "ex1": "ts-node src/example-1",
     "ex2": "ts-node src/example-2",
-    "ex3": "ts-node src/example-3"
+    "ex3": "ts-node src/example-3",
+    "ex4": "ts-node src/example-4"
   },
   "keywords": [],
   "author": "",

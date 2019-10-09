@@ -12,13 +12,13 @@ type Item = Readonly<{
 }>;
 
 type Action =
-  | { type: "add"; paylaod: Item }
-  | { type: "addAll"; paylaod: Item[] }
-  | { type: "remove"; paylaod: { id: string } }
-  | { type: "editFoo"; paylaod: { id: string; value: string } };
+  | { type: "add"; payload: Item }
+  | { type: "addAll"; payload: Item[] }
+  | { type: "remove"; payload: { id: string } }
+  | { type: "editFoo"; payload: { id: string; value: string } };
 
 type Dictionary<T> = {
-  readonly [key: string]: T;
+  readonly [key: string]: T | undefined;
 };
 
 type State = Readonly<{
@@ -40,13 +40,13 @@ const classicReducer = (state = initialState, action: Action): State => {
         ...state,
         items: {
           ...state.items,
-          [action.paylaod.id]: action.paylaod
+          [action.payload.id]: action.payload
         }
       };
     case "addAll":
       return {
         ...state,
-        items: action.paylaod.reduce(
+        items: action.payload.reduce(
           (map, item) => ({
             ...map,
             [item.id]: item
@@ -58,7 +58,7 @@ const classicReducer = (state = initialState, action: Action): State => {
       return {
         ...state,
         items: Object.fromEntries(
-          Object.entries(state.items).filter(([id]) => id !== action.paylaod.id)
+          Object.entries(state.items).filter(([id]) => id !== action.payload.id)
         )
       };
     case "editFoo":
@@ -66,8 +66,8 @@ const classicReducer = (state = initialState, action: Action): State => {
         ...state,
         items: Object.fromEntries(
           Object.entries(state.items).map(([id, item]) =>
-            id === action.paylaod.id
-              ? [id, { ...item, foo: action.paylaod.value }]
+            id === action.payload.id
+              ? [id, { ...item, foo: action.payload.value }]
               : [id, item]
           )
         )
@@ -83,23 +83,23 @@ const immerReducer = (state = initialState, action: Action): State =>
   produce(state, draft => {
     switch (action.type) {
       case "add":
-        draft.items[action.paylaod.id] = action.paylaod;
+        draft.items[action.payload.id] = action.payload;
         break;
 
       case "addAll":
-        action.paylaod.forEach(item => {
+        action.payload.forEach(item => {
           draft.items[item.id] = item;
         });
         break;
 
       case "remove":
-        delete draft.items[action.paylaod.id];
+        delete draft.items[action.payload.id];
         break;
 
       case "editFoo":
-        const item = draft.items[action.paylaod.id];
+        const item = draft.items[action.payload.id];
         if (item) {
-          item.foo = action.paylaod.value;
+          item.foo = action.payload.value;
         }
         break;
     }
@@ -126,7 +126,7 @@ const state: State = {
 };
 const action: Action = {
   type: "editFoo",
-  paylaod: { id: "i1", value: "new foo" }
+  payload: { id: "i1", value: "new foo" }
 };
 
 const resultA = classicReducer(state, action);

@@ -33,6 +33,7 @@ const initialState: State = {
 };
 
 type Action =
+  | { type: "doSomeTransformation" }
   | {
       type: "editA";
       paylaod: { categoryId: CategoryId; changes: Partial<FormSubData> };
@@ -71,7 +72,7 @@ const immerReducer = (state = initialState, action: Action): State =>
 
 function initEditorDataIfAbsent(state: Draft<State>, categoryId: CategoryId) {
   if (state.editedPerCategory[categoryId] == null) {
-    state.editedPerCategory[categoryId] = state.fetchedData; // oops!
+    state.editedPerCategory[categoryId] = state.fetchedData;
   }
 }
 
